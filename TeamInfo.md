@@ -1,4 +1,4 @@
-# Q-team000-sample
+# Q-team042-StoredProcedures
 
 ## Basic Information
 
@@ -19,10 +19,13 @@
 
 |   Info      |        Description     |
 | ----------- | ---------------------- |
-|  Title      |       ProjectTitle     |
+|  Title      |       UIUC Course Explorer 2.0     |
 | System URL  |      link_to_system    |
 | Video Link  |      link_to_video     |
 
 ## Project Summary
 
-This is a summary of the project!
+Our project aims to provide a webpage full of more detailed information students can use when deciding to register for (or just generally examine) courses here at the university. We aim to provide detailed information on the professors, gpa’s, and times for many courses here at the university. We will also include information about courses that satisfy general education requirements. Students will be able to use our webpage to do in depth analysis on the classes they want to take.
+
+If a student is struggling to fill a general education requirement, they could use our application to search for classes that satisfy their requirements. After finding a list of suitable courses, they can investigate information relating to the professor, including average GPA given for the course (and in general). They can also look at interesting correlations within the course data, such as how course start time and professor’s salary affects the average GPA.
+

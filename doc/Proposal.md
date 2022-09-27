@@ -18,7 +18,9 @@ UIUC Course Explorer 2.0 unifies the multitude of course resources, allowing stu
 
 
 ## Realness
-We will retrieve our data from Wade Fagen-Ulmchneider’s Useful Datasets (https://github.com/wadefagen/datasets). This Github repository contains directories corresponding to each of our four tables. Each directory contains multiple CSV files with data from different years. We can get the data by cloning the repository and migrating the CSV files to our SQL database.
+We will retrieve our data from Wade Fagen-Ulmchneider’s Useful Datasets (https://github.com/wadefagen/datasets). This Github repository contains directories corresponding to many datasets, four of which are of interest to us. We will be using the graybook, gpa, geneds, and course catalog datasets. The graybook dataset includes information about every faculty member at the university. The gpa dataset contains information about the grades that students recieved in classes, along with the professors that taught each class. The geneds dataset marks classes with the general education requirements they fulfill. Lastly, the course catalog dataset contains information on all the courses offered, including the start and end time, the course description, and the term(s) it was offered.
+
+Each directory contains multiple CSV files with data from different years. The CSV format will make it easy for us to begin working with the data. We can get the data by cloning the repository and migrating the CSV files to our SQL database. We will have to perform some manipulation to extract out common information into separate tables. We will provide more detail on the table structure in stage 2.
 
 ## Functionality
 

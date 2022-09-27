@@ -18,6 +18,7 @@ UIUC Course Explorer 2.0 unifies the multitude of course resources, allowing stu
 
 
 ## Realness
+We will retrieve our data from Wade Fagen-Ulmchneider’s Useful Datasets (https://github.com/wadefagen/datasets). This Github repository contains directories corresponding to each of our four tables. Each directory contains multiple CSV files with data from different years. We can get the data by cloning the repository and migrating the CSV files to our SQL database.
 
 ## Functionality
 

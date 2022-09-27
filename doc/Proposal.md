@@ -32,6 +32,8 @@ The in-depth professor information space will allow users to view courses the pr
 There will also be interfaces for performing CRUD operations on the professor and course information.
 
 ## UI Mockup
+[https://github.com/cs411-alawini/fa22-cs411-Q-team042-StoredProcedures/blob/main/doc/UI%20Mockup-2.pdf](https://github.com/cs411-alawini/fa22-cs411-Q-team042-StoredProcedures/blob/main/doc/UI%20Mockup-2.pdf)
+
 ## Project Work Distribution
 We will distribute the tasks defined in step 8 evenly among the four members of our group. Kshitij will complete the course search menu. Ryan will complete the course information page and the CRUD operations on courses. Ayush will complete the professor search menu. Justin will complete the professor information page and the CRUD operations for professors. Each member will be responsible for building the frontend and backend for their section.
 

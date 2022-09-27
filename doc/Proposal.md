@@ -12,6 +12,10 @@ The application will also provide an interface for updating the database. This i
 
 
 ## Usefulness
+Every student at UIUC is familiar with the Course Explorer, a powerful tool that helps students plan out their courses for a given semester. Students also regularly use other online resources like Wade Fagen-Ulmschneider’s Grade Disparity and RateMyProfessor. Although, individually, these websites are invaluable, they each serve a different purpose, and students are required to access each resource independently to make informed decisions.
+
+UIUC Course Explorer 2.0 unifies the multitude of course resources, allowing students to take advantage of historical course and faculty data to make the most of their college career. Through our application, students can gain insight into trends regarding course GPA, graduation requirements, departments, and faculty at UIUC. For example, students looking to fulfill their Advanced Composition requirement may be interested in finding courses offered during a particular semester, on a particular day, within a particular range of average GPAs. Although Course Explorer offers information about course terms and timings and the GenEd by GPA visualization offers information about course grades, there is no application that combines both functionalities.
+
 
 ## Realness
 
@@ -29,3 +33,8 @@ There will also be interfaces for performing CRUD operations on the professor an
 
 ## UI Mockup
 ## Project Work Distribution
+We will distribute the tasks defined in step 8 evenly among the four members of our group. Kshitij will complete the course search menu. Ryan will complete the course information page and the CRUD operations on courses. Ayush will complete the professor search menu. Justin will complete the professor information page and the CRUD operations for professors. Each member will be responsible for building the frontend and backend for their section.
+
+For the course and professor search menu, Kshitij and Ayush will be responsible for creating a search form that can be submitted to yield a list of matching courses and professors. Every course and professor in the list will be linked to a corresponding course and professor information page. Ryan and Justin will be responsible for creating relevant data regarding courses and professors in an appropriate format. Additionally, Ryan and Justin will implement Create, Update, and Delete operations in the backend.
+
+The entire group will work together on creating the tables and importing the CSV data into a SQL database. This will ensure that everybody has an understanding of our database schema and the relationships. 

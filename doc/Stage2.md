@@ -74,4 +74,4 @@ GenEdFulfillment(
 * College: Each college has a short unique code that is filled with either numbers or text. There is also a name for each college. Colleges can have many or no faculty.
 * Department: Each department has a short unique numerical code. There is also a name for each department. Departments can have many or no faculty.
 * GenEd: General education requirements are just a list of abbreviations for the requirement. A requirement can be applied to many or no courses.
-* Course Offering: The course offering is uniquely determined by the CRN, year, and season it is offered in. The course offering is also tied to exactly 1 course. We assume that only 1 professor teaches a course. All the A+ through W entries denote the number of students recieved each grade. We represent days of the week in "MTWTHR" format.
+* Course Offering: The course offering is uniquely determined by the CRN, year, and season it is offered in. The course offering is also tied to exactly 1 course. We assume that only 1 professor teaches a course. All the A+ through W entries denote the number of students recieved each grade. We represent days of the week in "MTWRF" format.

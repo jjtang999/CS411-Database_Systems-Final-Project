@@ -34,7 +34,7 @@ CREATE TABLE GenEd (
 );
 
 CREATE TABLE CourseOffering(
-    Year INT,
+    Yr INT,
     Term VARCHAR(10),
     CourseSubject VARCHAR(5),
     CourseNumber INT,
@@ -61,9 +61,12 @@ CREATE TABLE CourseOffering(
     Buliding VARCHAR(255),
     Room VARCHAR(10),
 
-    PRIMARY KEY (Year, Term, CRN),
-    FOREIGN KEY (CourseNumber, CourseSubject) REFERENCES Course(Number, Subject)
+    PRIMARY KEY (Yr, Term, CRN),
+    FOREIGN KEY (CourseSubject, CourseNumber) REFERENCES Course(Subject, Number)
+    FOREIGN KEY (PrimaryInstructor) REFERENCES Faculty(Name)
 );
+
+
 
 CREATE TABLE GenEdFulfillment(
     CourseNumber INT,

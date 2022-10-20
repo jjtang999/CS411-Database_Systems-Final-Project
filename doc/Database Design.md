@@ -1,41 +1,33 @@
 # Query 1: Course taught by well-paid instructors
 
+```SQL
 EXPLAIN ANALYZE
-SELECT c.Yr
+SELECT c.CourseSubject, c.CourseNumber, rich.Name
 FROM CourseOffering c
 JOIN (
 	SELECT Name
 	FROM Faculty
-	WHERE Salary > 100000
+	WHERE Salary > 50000
     ) AS rich ON c.PrimaryInstructor = rich.Name
+WHERE Yr > 2015 AND Term = "FALL"
+```
 
-## Index
-Index on salary
+## Indexing
+### Index on salary
 
+```SQL
 CREATE INDEX salary_idx ON Faculty(Salary);
-
-## Before Index
-# EXPLAIN
--> Nested loop inner join  (cost=2168.04 rows=8003) (actual time=0.117..11.451 rows=3087 loops=1)
-    -> Filter: (Faculty.Salary > 100000)  (cost=656.50 rows=2108) (actual time=0.074..2.270 rows=2082 loops=1)
-        -> Table scan on Faculty  (cost=656.50 rows=6325) (actual time=0.071..1.747 rows=6427 loops=1)
-    -> Filter: (c.PrimaryInstructor = Faculty.`Name`)  (cost=0.34 rows=4) (actual time=0.003..0.004 rows=1 loops=2082)
-        -> Index lookup on c using PrimaryInstructor (PrimaryInstructor=Faculty.`Name`)  (cost=0.34 rows=4) (actual time=0.003..0.004 rows=1 loops=2082)
-
-
-## AFter Index
--> Nested loop inner join  (cost=2203.05 rows=1594) (actual time=0.079..12.650 rows=3087 loops=1)
-    -> Filter: (c.PrimaryInstructor is not null)  (cost=507.65 rows=4844) (actual time=0.062..2.669 rows=5080 loops=1)
-        -> Table scan on c  (cost=507.65 rows=4844) (actual time=0.061..2.288 rows=5080 loops=1)
-    -> Filter: ((c.PrimaryInstructor = Faculty.`Name`) and (Faculty.Salary > 100000))  (cost=0.25 rows=0) (actual time=0.002..0.002 rows=1 loops=5080)
-        -> Single-row index lookup on Faculty using PRIMARY (Name=c.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.001..0.001 rows=1 loops=5080)
-
-
+CREATE INDEX year_idx ON CourseOffering(Yr);
+CREATE INDEX term_idx ON CourseOffering(Term);
+```
+Before Index
+```
 
 
 # Query 2: Instructors who give at least 5 F's, sorted descending
 
 DROP INDEX f_index ON CourseOffering;
+
 
 EXPLAIN ANALYZE
 SELECT f.name, f.salary, failProfs.F

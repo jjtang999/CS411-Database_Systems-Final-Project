@@ -45,7 +45,7 @@ ORDER BY failProfs.F DESC
 Index on number of F's given
 
 ```SQL
-DROP INDEX f_index ON CourseOffering;
+CREATE INDEX f_index ON CourseOffering(F);
 ```
 
 ## Before Index

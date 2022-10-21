@@ -62,6 +62,25 @@ CREATE INDEX term_idx ON CourseOffering(Term);
         -> Single-row index lookup on Faculty using PRIMARY (Name=c.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.001..0.002 rows=1 loops=1668)
 ```
 
+## Query 1 Final Output 
+```
+'BADM','445','Kurtz, Jeffrey M'
+'ACCY','200','Silhan, Peter A'
+'ACCY','415','Ciconte, William'
+'ACCY','502','Schwartz, Rachel'
+'CEE','201','Meidani, Hadi'
+'CEE','202','Sivapalan, Murugesu'
+'ACE','222','Stoddard, Paul B'
+'CEE','310','Tutumluer, Erol'
+'ACE','251','Michelson, Hope C'
+'CEE','320','Golparvar Fard, Mani'
+'CEE','350','Konar, Megan'
+'CEE','360','Cha, Eun Jeong'
+'CEE','406','Tutumluer, Erol'
+'CEE','416','Benekohal, Rahim F'
+'CEE','421','El-Rayes, Khaled A'
+```
+
 # Query 2: Instructors who give at least 5 F's, sorted descending
 
 ```SQL
@@ -111,4 +130,22 @@ CREATE INDEX f_index ON CourseOffering(F);
         -> Index range scan on CourseOffering using f_index, with index condition: (CourseOffering.F > 5)  (cost=128.06 rows=284) (actual time=0.419..2.013 rows=284 loops=1)
     -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
         -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
+```
+## Query 2 Final Output
+```
+'Ray, Christian R','88201.58','46'
+'Chen, Liqing','87550','39'
+'Leveritt, John M','51510','34'
+'Richards, Alicia','47318','34'
+'Petrickova, Sarka','51680','33'
+'Marville, Kelly','71516.93','31'
+'Marville, Kelly','71516.93','30'
+'Carey, Yvonne A','60855','30'
+'Sydnor, Synthia','81645','30'
+'Sydnor, Synthia','81645','29'
+'Yang, Wendy','99000','29'
+'Vazquez, Jose J','102700.02','29'
+'Fraterrigo, Jennifer M','89413.64','28'
+'Malhi, Ripan S','110102','28'
+'Fraterrigo, Jennifer M','89413.64','28'
 ```

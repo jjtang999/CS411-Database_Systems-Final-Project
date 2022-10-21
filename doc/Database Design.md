@@ -21,7 +21,7 @@ CREATE INDEX year_idx ON CourseOffering(Yr);
 CREATE INDEX term_idx ON CourseOffering(Term);
 ```
 Before Index
-```
+
 
 
 # Query 2: Instructors who give at least 5 F's, sorted descending

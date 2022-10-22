@@ -169,6 +169,10 @@ CREATE INDEX term_idx ON CourseOffering(Term);
     -> Filter: ((c.PrimaryInstructor = Faculty.`Name`) and (Faculty.Salary > 50000))  (cost=0.25 rows=0) (actual time=0.002..0.002 rows=1 loops=1668)
         -> Single-row index lookup on Faculty using PRIMARY (Name=c.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.001..0.002 rows=1 loops=1668)
 ```
+
+### Analysis on Index
+After examining the indices, we decided to index on Salary and Year. We decided to do this because when we compared the cost of the query to the baseline there is no difference, while the index by term increased the cost by several hundred. We hypothesize that there is no difference from the baseline because the work of the query is evenly split between searching for salaries that meet the threshold and by joining the table based on the primary key. Regardless, we are going to index by Salary and Year because we think that there will be benefits on future queries we will design.
+
 ## Index
 Index on number of F's given
 

@@ -133,7 +133,7 @@ CREATE INDEX year_idx ON CourseOffering(Yr);
 CREATE INDEX term_idx ON CourseOffering(Term);
 ```
 
-## Before Indexing
+### Before Indexing
 ```
 -> Nested loop inner join  (cost=572.27 rows=81) (actual time=0.118..7.459 rows=1577 loops=1)
     -> Filter: ((c.Term = 'FALL') and (c.Yr > 2015) and (c.PrimaryInstructor is not null))  (cost=487.50 rows=242) (actual time=0.104..3.517 rows=1668 loops=1)
@@ -143,7 +143,7 @@ CREATE INDEX term_idx ON CourseOffering(Term);
 
 ```
 
-## After Indexing by Salary and Year
+### After Indexing by Salary and Year
 ```
 -> Nested loop inner join  (cost=572.27 rows=121) (actual time=0.156..7.177 rows=1577 loops=1)
     -> Filter: ((c.Term = 'FALL') and (c.Yr > 2015) and (c.PrimaryInstructor is not null))  (cost=487.50 rows=242) (actual time=0.141..3.484 rows=1668 loops=1)
@@ -152,7 +152,7 @@ CREATE INDEX term_idx ON CourseOffering(Term);
         -> Single-row index lookup on Faculty using PRIMARY (Name=c.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.001..0.002 rows=1 loops=1668)
 
 ```
-## After Indexing by Term  
+### After Indexing by Term  
 ```
 -> Nested loop inner join  (cost=911.35 rows=404) (actual time=0.281..7.475 rows=1577 loops=1)
     -> Filter: ((c.Term = 'FALL') and (c.Yr > 2015) and (c.PrimaryInstructor is not null))  (cost=487.50 rows=1211) (actual time=0.125..3.541 rows=1668 loops=1)
@@ -162,7 +162,7 @@ CREATE INDEX term_idx ON CourseOffering(Term);
 
 ```
 
-## Optimized Indexing
+### Optimized Indexing
 ```
 -> Nested loop inner join  (cost=572.27 rows=121) (actual time=0.156..7.177 rows=1577 loops=1)
     -> Filter: ((c.Term = 'FALL') and (c.Yr > 2015) and (c.PrimaryInstructor is not null))  (cost=487.50 rows=242) (actual time=0.141..3.484 rows=1668 loops=1)
@@ -184,7 +184,7 @@ CREATE INDEX a_index ON CourseOffering(A);
 CREATE INDEX am_index ON CourseOffering(Am);
 ```
 
-## Before Indexing
+### Before Indexing
 ```
 -> Nested loop inner join  (cost=1395.68 rows=4844) (actual time=3.362..3.381 rows=6 loops=1)
     -> Sort: CourseOffering.F DESC  (cost=507.65 rows=4844) (actual time=3.321..3.322 rows=6 loops=1)
@@ -194,7 +194,7 @@ CREATE INDEX am_index ON CourseOffering(Am);
         -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.008..0.008 rows=1 loops=6)
 ```
 
-## After Indexing by F
+### After Indexing by F
 ```
 -> Nested loop inner join  (cost=227.46 rows=284) (actual time=0.390..0.920 rows=6 loops=1)
     -> Filter: ((((CourseOffering.A + CourseOffering.Ap) + CourseOffering.Am) < 10) and (CourseOffering.PrimaryInstructor is not null))  (cost=128.06 rows=284) (actual time=0.369..0.875 rows=6 loops=1)
@@ -203,7 +203,7 @@ CREATE INDEX am_index ON CourseOffering(Am);
         -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.006..0.006 rows=1 loops=6)
 
 ```
-## After Indexing by Ap
+### After Indexing by Ap
 ```
 -> Nested loop inner join  (cost=1395.68 rows=4844) (actual time=3.188..3.210 rows=6 loops=1)
     -> Sort: CourseOffering.F DESC  (cost=507.65 rows=4844) (actual time=3.151..3.152 rows=6 loops=1)
@@ -213,7 +213,7 @@ CREATE INDEX am_index ON CourseOffering(Am);
         -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.008..0.008 rows=1 loops=6)
 ```
 
-## After Indexing by A
+### After Indexing by A
 ```
 -> Nested loop inner join  (cost=1395.68 rows=4844) (actual time=3.210..3.230 rows=6 loops=1)
     -> Sort: CourseOffering.F DESC  (cost=507.65 rows=4844) (actual time=3.183..3.184 rows=6 loops=1)
@@ -222,6 +222,8 @@ CREATE INDEX am_index ON CourseOffering(Am);
     -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.007..0.007 rows=1 loops=6)
         -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.006..0.006 rows=1 loops=6)
 ```
+
+### Analysis on Index
 
 Indexing on Am gives the same results as above. This is likely because our query filters by the sum of Ap, A, and Am rather than the individual columns themselves. 
 

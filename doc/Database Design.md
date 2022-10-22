@@ -1,7 +1,98 @@
-# Query 1: Course taught by well-paid instructors
+# Database Design
+
+## Database Implementation
+### Setup GCP
+![Connection](media/Connection.png)
+
+### Setup Tables
+```SQL
+CREATE DATABASE course_explorer;
+
+CREATE TABLE Course (
+    Subject VARCHAR(5),
+    Number INT,
+    Name VARCHAR(255),
+    Description TEXT,
+    CreditHours VARCHAR(15),
+    PRIMARY KEY(Subject, Number)
+);
+
+CREATE TABLE Faculty(
+    Name VARCHAR(225) NOT NULL PRIMARY KEY,
+    Salary REAL,
+    DepartmentCode INT,
+    CollegeCode VARCHAR(5),
+
+    FOREIGN KEY (DepartmentCode) REFERENCES Department(DepartmentCode),
+    FOREIGN KEY (CollegeCode) REFERENCES College(CollegeCode)
+);
+
+CREATE TABLE College (
+    CollegeCode VARCHAR(5) NOT NULL PRIMARY KEY,
+    CollegeName VARCHAR(225)
+);
+
+CREATE TABLE Department (
+    DepartmentCode INT NOT NULL PRIMARY KEY,
+    DepartmentName VARCHAR(255)
+);
+
+CREATE TABLE GenEd (
+    Abbreviation VARCHAR(5) NOT NULL PRIMARY KEY
+);
+
+CREATE TABLE CourseOffering(
+    Yr INT,
+    Term VARCHAR(10),
+    CourseSubject VARCHAR(5),
+    CourseNumber INT,
+    Ap INT,
+    A INT,
+    Am INT,
+    Bp INT,
+    B INT,
+    Bm INT,
+    Cp INT,
+    C INT,
+    Cm INT,
+    Dp INT,
+    D INT,
+    Dm INT,
+    F INT,
+    W INT,
+    PrimaryInstructor VARCHAR(255),
+    CRN INT,
+    SectionNumber VARCHAR(5),
+    StartTime TIME,
+    EndTime TIME,
+    DaysOfWeek VARCHAR(10),
+    Buliding VARCHAR(255),
+    Room VARCHAR(10),
+
+    PRIMARY KEY (Yr, Term, CRN),
+    FOREIGN KEY (CourseSubject, CourseNumber) REFERENCES Course(Subject, Number)
+    FOREIGN KEY (PrimaryInstructor) REFERENCES Faculty(Name)
+);
+
+
+
+CREATE TABLE GenEdFulfillment(
+    CourseNumber INT,
+    CourseSubject VARCHAR(5),
+    GenEdAbbreviation VARCHAR(5),
+
+    FOREIGN KEY (CourseSubject, CourseNumber) REFERENCES Course(Subject, Number),
+    FOREIGN KEY (GenEdAbbreviation) REFERENCES GenEd(Abbreviation)
+);
+```
+
+### At least 1000 rows in three tables
+![Count](media/count_rows.png)
+
+## Advanced Queries
+### Query 1: Course taught by well-paid instructors
 
 ```SQL
-EXPLAIN ANALYZE
 SELECT c.CourseSubject, c.CourseNumber, rich.Name
 FROM CourseOffering c
 JOIN (
@@ -11,6 +102,23 @@ JOIN (
     ) AS rich ON c.PrimaryInstructor = rich.Name
 WHERE Yr > 2015 AND Term = "FALL"
 ```
+
+![Query1](media/query1.png)
+
+### Query 2: Instructors who give at least 5 F's, sorted descending
+
+```SQL
+SELECT f.name, f.salary, failProfs.F
+FROM Faculty f
+JOIN (
+	SELECT PrimaryInstructor, F
+	FROM CourseOffering
+	WHERE F > 5
+    ) AS failProfs ON f.Name = failProfs.PrimaryInstructor
+ORDER BY failProfs.F DESC
+```
+
+![Query2](media/query2.png)
 
 ## Indexing
 ### Index on salary and year
@@ -61,43 +169,6 @@ CREATE INDEX term_idx ON CourseOffering(Term);
     -> Filter: ((c.PrimaryInstructor = Faculty.`Name`) and (Faculty.Salary > 50000))  (cost=0.25 rows=0) (actual time=0.002..0.002 rows=1 loops=1668)
         -> Single-row index lookup on Faculty using PRIMARY (Name=c.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.001..0.002 rows=1 loops=1668)
 ```
-
-## Query 1 Final Output 
-```
-'BADM','445','Kurtz, Jeffrey M'
-'ACCY','200','Silhan, Peter A'
-'ACCY','415','Ciconte, William'
-'ACCY','502','Schwartz, Rachel'
-'CEE','201','Meidani, Hadi'
-'CEE','202','Sivapalan, Murugesu'
-'ACE','222','Stoddard, Paul B'
-'CEE','310','Tutumluer, Erol'
-'ACE','251','Michelson, Hope C'
-'CEE','320','Golparvar Fard, Mani'
-'CEE','350','Konar, Megan'
-'CEE','360','Cha, Eun Jeong'
-'CEE','406','Tutumluer, Erol'
-'CEE','416','Benekohal, Rahim F'
-'CEE','421','El-Rayes, Khaled A'
-```
-
-# Query 2: Instructors who give at least 5 F's, sorted descending
-
-```SQL
-DROP INDEX f_index ON CourseOffering;
-
-
-EXPLAIN ANALYZE
-SELECT f.name, f.salary, failProfs.F
-FROM Faculty f
-JOIN (
-	SELECT PrimaryInstructor, F
-	FROM CourseOffering
-	WHERE F > 5
-    ) AS failProfs ON f.Name = failProfs.PrimaryInstructor
-ORDER BY failProfs.F DESC
-```
-
 ## Index
 Index on number of F's given
 
@@ -130,22 +201,4 @@ CREATE INDEX f_index ON CourseOffering(F);
         -> Index range scan on CourseOffering using f_index, with index condition: (CourseOffering.F > 5)  (cost=128.06 rows=284) (actual time=0.419..2.013 rows=284 loops=1)
     -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
         -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
-```
-## Query 2 Final Output
-```
-'Ray, Christian R','88201.58','46'
-'Chen, Liqing','87550','39'
-'Leveritt, John M','51510','34'
-'Richards, Alicia','47318','34'
-'Petrickova, Sarka','51680','33'
-'Marville, Kelly','71516.93','31'
-'Marville, Kelly','71516.93','30'
-'Carey, Yvonne A','60855','30'
-'Sydnor, Synthia','81645','30'
-'Sydnor, Synthia','81645','29'
-'Yang, Wendy','99000','29'
-'Vazquez, Jose J','102700.02','29'
-'Fraterrigo, Jennifer M','89413.64','28'
-'Malhi, Ripan S','110102','28'
-'Fraterrigo, Jennifer M','89413.64','28'
 ```

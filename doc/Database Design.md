@@ -105,7 +105,8 @@ WHERE Yr > 2015 AND Term = "FALL"
 
 ![Query1](media/query1.png)
 
-### Query 2: Instructors who give at least 5 F's, sorted descending
+### Query 2: Instructors by grades given
+An example of a query we would make on the Faculty table filters the output by the grades they give in each course section. Here, we find all professors who give at least 5 F's and fewer than 10 A's.
 
 ```SQL
 SELECT f.name, f.salary, failProfs.F
@@ -113,7 +114,7 @@ FROM Faculty f
 JOIN (
 	SELECT PrimaryInstructor, F
 	FROM CourseOffering
-	WHERE F > 5
+	WHERE F > 5 AND A + Ap + Am < 10
     ) AS failProfs ON f.Name = failProfs.PrimaryInstructor
 ORDER BY failProfs.F DESC
 ```
@@ -178,31 +179,53 @@ Index on number of F's given
 
 ```SQL
 CREATE INDEX f_index ON CourseOffering(F);
+CREATE INDEX ap_index ON CourseOffering(Ap);
+CREATE INDEX a_index ON CourseOffering(A);
+CREATE INDEX am_index ON CourseOffering(Am);
 ```
 
 ## Before Indexing
 ```
--> Nested loop inner join  (cost=1395.68 rows=4844) (actual time=2.825..3.473 rows=284 loops=1)
-    -> Sort: CourseOffering.F DESC  (cost=507.65 rows=4844) (actual time=2.790..2.820 rows=284 loops=1)
-        -> Filter: ((CourseOffering.F > 5) and (CourseOffering.PrimaryInstructor is not null))  (cost=507.65 rows=4844) (actual time=0.097..2.656 rows=284 loops=1)
-            -> Table scan on CourseOffering  (cost=507.65 rows=4844) (actual time=0.089..2.329 rows=5080 loops=1)
-    -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
-        -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
+-> Nested loop inner join  (cost=1395.68 rows=4844) (actual time=3.362..3.381 rows=6 loops=1)
+    -> Sort: CourseOffering.F DESC  (cost=507.65 rows=4844) (actual time=3.321..3.322 rows=6 loops=1)
+        -> Filter: ((CourseOffering.F > 5) and (((CourseOffering.A + CourseOffering.Ap) + CourseOffering.Am) < 10) and (CourseOffering.PrimaryInstructor is not null))  (cost=507.65 rows=4844) (actual time=0.433..3.299 rows=6 loops=1)
+            -> Table scan on CourseOffering  (cost=507.65 rows=4844) (actual time=0.168..2.959 rows=5080 loops=1)
+    -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.009..0.009 rows=1 loops=6)
+        -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.008..0.008 rows=1 loops=6)
 ```
 
 ## After Indexing by F
 ```
--> Nested loop inner join  (cost=227.46 rows=284) (actual time=0.439..2.760 rows=284 loops=1)
-    -> Filter: (CourseOffering.PrimaryInstructor is not null)  (cost=128.06 rows=284) (actual time=0.421..2.037 rows=284 loops=1)
-        -> Index range scan on CourseOffering using f_index, with index condition: (CourseOffering.F > 5)  (cost=128.06 rows=284) (actual time=0.419..2.013 rows=284 loops=1)
-    -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
-        -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
+-> Nested loop inner join  (cost=227.46 rows=284) (actual time=0.390..0.920 rows=6 loops=1)
+    -> Filter: ((((CourseOffering.A + CourseOffering.Ap) + CourseOffering.Am) < 10) and (CourseOffering.PrimaryInstructor is not null))  (cost=128.06 rows=284) (actual time=0.369..0.875 rows=6 loops=1)
+        -> Index range scan on CourseOffering using f_index, with index condition: (CourseOffering.F > 5)  (cost=128.06 rows=284) (actual time=0.346..0.842 rows=284 loops=1)
+    -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.007..0.007 rows=1 loops=6)
+        -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.006..0.006 rows=1 loops=6)
+
 ```
-## Optimized Indexing:
+## After Indexing by Ap
 ```
--> Nested loop inner join  (cost=227.46 rows=284) (actual time=0.439..2.760 rows=284 loops=1)
-    -> Filter: (CourseOffering.PrimaryInstructor is not null)  (cost=128.06 rows=284) (actual time=0.421..2.037 rows=284 loops=1)
-        -> Index range scan on CourseOffering using f_index, with index condition: (CourseOffering.F > 5)  (cost=128.06 rows=284) (actual time=0.419..2.013 rows=284 loops=1)
-    -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
-        -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.002..0.002 rows=1 loops=284)
+-> Nested loop inner join  (cost=1395.68 rows=4844) (actual time=3.188..3.210 rows=6 loops=1)
+    -> Sort: CourseOffering.F DESC  (cost=507.65 rows=4844) (actual time=3.151..3.152 rows=6 loops=1)
+        -> Filter: ((CourseOffering.F > 5) and (((CourseOffering.A + CourseOffering.Ap) + CourseOffering.Am) < 10) and (CourseOffering.PrimaryInstructor is not null))  (cost=507.65 rows=4844) (actual time=0.386..3.134 rows=6 loops=1)
+            -> Table scan on CourseOffering  (cost=507.65 rows=4844) (actual time=0.103..2.798 rows=5080 loops=1)
+    -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.009..0.009 rows=1 loops=6)
+        -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.008..0.008 rows=1 loops=6)
+```
+
+## After Indexing by A
+```
+-> Nested loop inner join  (cost=1395.68 rows=4844) (actual time=3.210..3.230 rows=6 loops=1)
+    -> Sort: CourseOffering.F DESC  (cost=507.65 rows=4844) (actual time=3.183..3.184 rows=6 loops=1)
+        -> Filter: ((CourseOffering.F > 5) and (((CourseOffering.A + CourseOffering.Ap) + CourseOffering.Am) < 10) and (CourseOffering.PrimaryInstructor is not null))  (cost=507.65 rows=4844) (actual time=0.355..3.168 rows=6 loops=1)
+            -> Table scan on CourseOffering  (cost=507.65 rows=4844) (actual time=0.083..2.823 rows=5080 loops=1)
+    -> Filter: (f.`Name` = CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.007..0.007 rows=1 loops=6)
+        -> Single-row index lookup on f using PRIMARY (Name=CourseOffering.PrimaryInstructor)  (cost=0.25 rows=1) (actual time=0.006..0.006 rows=1 loops=6)
+```
+
+Indexing on Am gives the same results as above. This is likely because our query filters by the sum of Ap, A, and Am rather than the individual columns themselves. 
+
+From the results above, we see that indexing on F gives significant reduction in cost. Because we plan to offer our user the ability fo filter instructors by specific grades, and indexing on F gives the greatest performance benefit, we will create an index on `F` in `CourseOffering`: 
+```SQL
+CREATE INDEX f_index ON CourseOffering(F);
 ```

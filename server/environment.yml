@@ -1,0 +1,6 @@
+name: StoredProcedures
+channels:
+  - defaults
+dependencies:
+  - flask
+  - mysql-connector-python

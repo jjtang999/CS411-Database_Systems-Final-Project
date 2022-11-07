@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Course Description</title>
+</head>
+<body>
+    <h1>{{ "{} {}: {}".format(course[0], course[1], course[2]) }}</h1>
+    <h2>Sections</h2>
+    <table>
+        <tr>
+            <!-- Yr, Term, SectionNumber, PrimaryInstructor, StartTime, EndTime, DaysOfWeek, Buliding, Room -->
+            <th>Year</th>
+            <th>Term</th>
+            <th>Section Number</th>
+            <th>Primary Instructor</th>
+            <th>Start Time</th>
+            <th>End Time</th>
+            <th>Days of Week</th>
+            <th>Building</th>
+            <th>Room</th>
+        </tr>
+        {% for section in offerings %}
+        <tr>
+            <td>{{ section[0] }}</td>
+            <td>{{ section[1] }}</td>
+            <td>{{ section[2] }}</td>
+            <td>{{ section[3] }}</td>
+            <td>{{ section[4] }}</td>
+            <td>{{ section[5] }}</td>
+            <td>{{ section[6] }}</td>
+            <td>{{ section[8] }}</td>
+            <td>{{ section[7] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    <h2>Instructors</h2>
+    <table>
+        <tr>
+            <th>Instructor</th>
+            <th>Average GPA</th>
+            <th>Most common grade</th>
+        </tr>
+        {% for instructor in instructor_data %}
+        <tr>
+            <td>{{ instructor[0] }}</td>
+            <td>{{ instructor[1] }}</td>
+            <td>{{ instructor[2] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+</html>

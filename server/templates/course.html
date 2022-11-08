@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course</title>
+</head>
+<body>
+    <h1>Modify Courses</h1>
+    <form action="/course" method="POST">
+        <label for="subject">Course Subject</label>
+        <input type="text" name="subject" id="subject" required>
+        <label for="number">Course Number</label>
+        <input type="number" name="number" id="number" required>
+        <label for="name">Course Name</label>
+        <input type="text" name="name" id="name">
+        <label for="description">Course Description</label>
+        <input type="text" name="description" id="description">
+        <label for="credits">Course Credits</label>
+        <input type="text" name="credits" id="credits">
+        <label for="delete">Delete Entry</label>
+        <input type="checkbox" name="delete" id="delete">
+        <input type="submit" value="Submit">
+    </form>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+    <p style="color: green;">{{ success }}</p>
+    {% endif %}
+</body>
+</html>

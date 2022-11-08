@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 from . import db
 
 app = Flask(__name__)
@@ -39,3 +39,68 @@ def course_description(subject, number):
         instructor_data = result.fetchall()
 
     return render_template('course-description.html', course=course[0], offerings=offerings, instructor_data=instructor_data)
+
+@app.route('/course', methods=['GET', 'POST'])
+def course_crud():
+    error = success = None
+    if request.method == 'POST':
+        if request.form['subject'] and request.form['number']:
+            if 'delete' in request.form:
+                subject = request.form['subject'].upper()
+                number = int(request.form['number'])
+                data = db.get_db()
+                cursor = data.cursor()
+                query = """
+                    SELECT Subject, Number
+                    FROM Course
+                    WHERE Subject = %s AND Number = %s
+                """
+                cursor.execute(query, (subject, number))
+                course = cursor.fetchall()
+                # TODO: Check if there is a better way to do this without needing to check if the course exists
+                if course:
+                    # Delete the course
+                    delete_query = """
+                        DELETE FROM Course
+                        WHERE Subject = %s AND Number = %s
+                    """
+                    cursor.execute(delete_query, (subject, number))
+                    data.commit()
+                    success = f'Deleted course {subject} {number}'
+                else:
+                    error = f'Course {subject} {number} does not exist'
+            else:
+                subject = request.form['subject'].upper()
+                number = int(request.form['number'])
+                data = db.get_db()
+                cursor = data.cursor()
+                query = """
+                    SELECT Subject, Number
+                    FROM Course
+                    WHERE Subject = %s AND Number = %s
+                """
+                cursor.execute(query, (subject, number))
+                course = cursor.fetchall()
+                if course:
+                    # Update the course
+                    # TODO: Input validation on the length and type of inputs
+                    update_query = """
+                        UPDATE Course
+                        SET Name = %s, Description = %s, CreditHours = %s
+                        WHERE Subject = %s AND Number = %s
+                    """
+                    cursor.execute(update_query, (request.form['name'], request.form['description'], request.form['credits'], subject, number))
+                    data.commit()
+                    success = f'Updated course {subject} {number}'
+                else:
+                    # Insert a new course
+                    insert_query = """
+                        INSERT INTO Course (Subject, Number, Name, Description, CreditHours)
+                        VALUES (%s, %s, %s, %s, %s)
+                    """
+                    cursor.execute(insert_query, (subject, number, request.form['name'], request.form['description'], request.form['credits']))
+                    data.commit()
+                    success = f'Inserted course {subject} {number}'
+        else:
+            error = 'Subject and number are required'
+    return render_template('course.html', success=success, error=error)

@@ -13,13 +13,17 @@
     <h1>Enter parameters to search for professor </h1>
     <form action="/professor-search" method="POST">
         <label for="name">Professor Name</label>
-        <input type="text" name="name" id="name" required >
+        <input type="text" name="name" id="name" >
         <label for="salary">Professor Salary</label>
         <input type="number" name="salary" id="salary" >
         <label for="deptCode"> Department Code </label>
         <input type="number" name="deptCode" id="deptCode">
         <label for="colCode">College Code </label>
         <input type="text" name="colCode" id="colCode">
+        <label for="fgt"> Number of F's greather than </label>
+        <input type="text" name="fgt" id="fgt">
+        <label for="ast"> Number of A's smaller than</label>
+        <input type="text" name="ast" id="ast">
         <input type="submit" value="Submit">
     </form>
     {% if response %}

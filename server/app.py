@@ -177,9 +177,32 @@ def course_search():
 def professor_search():
     response = None
     professor = None
+    countAs = None
+    countFs = None
     if request.method == 'POST':
         print(request.form['name'])
-        if request.form['name']:
+        if request.form['fgt'] and request.form['ast'] :
+            countAs = request.form['ast']
+            countFs = request.form['fgt']
+            database = db.get_db()
+            dbCursor = database.cursor()
+            query = """
+                SELECT f.name, f.salary, failProfs.F
+                FROM Faculty f
+                JOIN (
+	                SELECT PrimaryInstructor, F
+	                FROM CourseOffering
+	                WHERE F > %s AND A + Ap + Am < %s
+                ) AS failProfs ON f.Name = failProfs.PrimaryInstructor
+                ORDER BY failProfs.F DESC
+            """
+            dbCursor.execute(query, (countFs,countAs) )
+            professor = dbCursor.fetchall()
+            if professor:
+                response = f'Professors with number of As smaller than {countAs} and number of Fs greater than {countFs} found '
+            else:
+                response =  f'Professors with number of As smaller than {countAs} and number of Fs greater than {countFs} does not exist'
+        elif request.form['name']:
             # profName = request.form['name'][0].upper() + request.form['name'][1:].lower()
             profName = request.form['name']
             database = db.get_db()
@@ -198,5 +221,5 @@ def professor_search():
             else:
                 response =  f'Professor {profName} does not exist'
         else:
-            response = 'Professor Name is required'
+            response = 'Professor Name or Grade range is required'
     return render_template('professor_search_menu.html', response = response, professor = professor )

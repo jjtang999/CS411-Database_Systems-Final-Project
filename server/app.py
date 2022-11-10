@@ -160,7 +160,7 @@ def course_search():
     
     return render_template('course-search.html', results=courses)
 
-@app.route('/professor', methods=['GET', 'POST'])
+@app.route('/professor-search', methods=['GET', 'POST'])
 def professor_search():
     response = None
     professor = None

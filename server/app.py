@@ -155,3 +155,31 @@ def course_search():
         courses = dictcursor.fetchall()
     
     return render_template('course-search.html', results=courses)
+
+@app.route('/professor', methods=['GET', 'POST'])
+def professor_search():
+    response = None
+    professor = None
+    if request.method == 'POST':
+        print(request.form['name'])
+        if request.form['name']:
+            # profName = request.form['name'][0].upper() + request.form['name'][1:].lower()
+            profName = request.form['name']
+            database = db.get_db()
+            dbCursor = database.cursor()
+            query = """
+                SELECT Name, Salary, DepartmentCode, CollegeCode
+                FROM Faculty 
+                WHERE Name = %s 
+            """
+            dbCursor.execute(query, [profName] )
+            professor = dbCursor.fetchall()
+            print("Professor sql output: ",professor)
+            # Checking if query was successfull 
+            if professor:
+                response = f'Professor {profName} found '
+            else:
+                response =  f'Professor {profName} does not exist'
+        else:
+            response = 'Professor Name is required'
+    return render_template('professor_search_menu.html', response = response, professor = professor )

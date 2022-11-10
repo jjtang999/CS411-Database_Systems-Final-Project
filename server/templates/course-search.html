@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Search</title>
+</head>
+
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <h1>Search for courses</h1>
+    <form action="/course-search" method="POST">
+        <label for="subject">Course Subject</label>
+        <input type="text" name="subject" id="subject">
+        <label for="subject">Course Number</label>
+        <input type="number" name="number" id="number">
+        <input type="submit" value="Submit">
+    </form>
+
+    <h1>Results</h1>
+    <table>
+        <tr>
+            <th>Subject</th>
+            <th>Number</th>
+            <th>Name</th>
+            <th>Description</th>
+            <th>CreditHours</th>
+        </tr>
+        
+        {% for result in results %}
+        <tr>
+            <td> {{ result.Subject }} </td>
+            <td> {{ result.Number }} </td>
+            <td>{{ result.Name }} </td>
+            <td>{{ result.Description }}</td>
+            <td>{{ result.CreditHours }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

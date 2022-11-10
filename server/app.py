@@ -108,3 +108,39 @@ def course_crud():
         else:
             error = 'Subject and number are required'
     return render_template('course.html', success=success, error=error)
+
+@app.route('/course-search', methods=['GET', 'POST'])
+def course_search():
+    error = success = None
+    
+    courses = []
+    if request.method == 'POST':
+        filters = []
+        filter_vals = []
+
+        subject = request.form['subject'].upper()
+        if subject != '':
+            filters.append('Subject = %s')
+            filter_vals.append(subject)
+
+        number = request.form['number']
+        if number != '':
+            filters.append('Number = %s')
+            filter_vals.append(number)
+
+        data = db.get_db()
+        dictcursor = data.cursor(dictionary=True)
+
+        filter_str = " AND ".join(filters)
+        query = f"""
+            SELECT *
+            FROM Course
+            WHERE {filter_str}
+        """
+
+        if len(filters) > 0:
+            dictcursor.execute(query, filter_vals)
+            courses = dictcursor.fetchall()
+            print(courses)
+    
+    return render_template('course-search.html', results=courses)

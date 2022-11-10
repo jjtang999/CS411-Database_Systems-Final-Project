@@ -113,9 +113,22 @@ def course_crud():
             error = 'Subject and number are required'
     return render_template('course.html', success=success, error=error)
 
+# Returns gened abbreviations as a list of strings
+def get_gened_abbreviations():
+    data = db.get_db()
+    cursor = data.cursor()
+    query = """
+        SELECT Abbreviation FROM GenEd
+    """
+
+    cursor.execute(query)
+    return [g[0] for g in cursor.fetchall()]
+
 @app.route('/course-search', methods=['GET', 'POST'])
 def course_search():    
     courses = []
+    gened_types = get_gened_abbreviations()
+
     if request.method == 'POST':
         filters = []
         filter_vals = []
@@ -158,7 +171,7 @@ def course_search():
         dictcursor.execute(query, filter_vals)
         courses = dictcursor.fetchall()
     
-    return render_template('course-search.html', results=courses)
+    return render_template('course-search.html', results=courses, geneds=gened_types)
 
 @app.route('/professor-search', methods=['GET', 'POST'])
 def professor_search():

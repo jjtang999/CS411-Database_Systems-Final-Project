@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Course Search</title>
+</head>
+
+<style>
+    table,
+    th,
+    td {
+        border: 1px solid black;
+    }
+</style>
+
+<body>
+    <button onclick="window.location.href='/';">
+        Back to front page
+    </button>
+    <h1>Find corses taught by professors with salary</h1>
+    <form action="/rich-professor" method="POST">
+        <label for="salary_min">Salary greater than</label>
+        <input type="number" name="salary_min" id="salary_min" requried>
+
+        <label for="salary_max">Salary less than</label>
+        <input type="number" name="salary_max" id="salary_max" required><br>
+
+        <label for="number">Year</label>
+        <input type="number" name="year" id="year" required>
+
+        <label for="gened">GenEd Requirement</label>
+        <select name="gened" id="gened">
+            {% for genedAbbr in geneds %}
+            <option value={{genedAbbr}}>{{genedAbbr}}</option>
+            {% endfor %}
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <h1>Results</h1>
+    <table>
+        <tr>
+            <th>Subject</th>
+            <th>Course Number</th>
+            <th>Professor Name</th>
+            <th>Salary</th>
+        </tr>
+
+        {% for result in results %}
+        <tr>
+            <td>
+                <a href={{ 'course-description/%s/%s' %(result.CourseSubject,result.CourseNumber) }}>
+                    {{ result.CourseSubject }}
+                </a>
+            </td>
+            <td>{{ result.CourseNumber }} </td>
+            <td>{{ result.Name }}</td>
+            <td>{{ result.Salary }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+</body>
+
+</html>

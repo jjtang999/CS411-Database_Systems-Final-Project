@@ -109,6 +109,52 @@ def course_crud():
             error = 'Subject and number are required'
     return render_template('course.html', success=success, error=error)
 
+@app.route('/course-search', methods=['GET', 'POST'])
+def course_search():    
+    courses = []
+    if request.method == 'POST':
+        filters = []
+        filter_vals = []
+
+        subject = request.form['subject'].upper()
+        if subject != '':
+            filters.append('Subject = %s')
+            filter_vals.append(subject)
+
+        number = request.form['number']
+        if number != '':
+            filters.append('Number = %s')
+            filter_vals.append(number)
+
+        gened = request.form['gened']
+        if gened != '':
+            filters.append('GenEdAbbreviation = %s')
+            filter_vals.append(gened)
+
+        data = db.get_db()
+        dictcursor = data.cursor(dictionary=True)
+
+        query = """
+            SELECT DISTINCT *
+            FROM Course
+            LEFT JOIN GenEdFulfillment g ON
+                Course.Subject = g.CourseSubject AND
+                Course.Number = g.CourseNumber
+        """
+
+        print(filters)
+        filter_str = " AND ".join(filters)
+        if len(filters) > 0:
+            query += f"""
+                WHERE {filter_str}
+            """
+
+        print(query)
+
+        dictcursor.execute(query, filter_vals)
+        courses = dictcursor.fetchall()
+    
+    return render_template('course-search.html', results=courses)
 
 @app.route('/professor', methods=['GET', 'POST'])
 def professor_search():

@@ -14,6 +14,10 @@ app.config['DB_NAME'] = 'course_explorer'
 
 db.init_app(app)
 
+@app.route('/')
+def front_page():
+    return render_template('front-page.html')
+
 @app.route('/course-description/<subject>/<number>')
 def course_description(subject, number):
     # TODO: Handle errors if subject or number are invalid or do not exist

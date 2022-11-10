@@ -21,8 +21,10 @@
     <form action="/course-search" method="POST">
         <label for="subject">Course Subject</label>
         <input type="text" name="subject" id="subject">
-        <label for="subject">Course Number</label>
+        <label for="number">Course Number</label>
         <input type="number" name="number" id="number">
+        <label for="gened">GenEd Requirement</label>
+        <input type="text" name="gened" id="gened">
         <input type="submit" value="Submit">
     </form>
 
@@ -34,8 +36,9 @@
             <th>Name</th>
             <th>Description</th>
             <th>CreditHours</th>
+            <th>GenEd</th>
         </tr>
-        
+
         {% for result in results %}
         <tr>
             <td> {{ result.Subject }} </td>
@@ -43,6 +46,7 @@
             <td>{{ result.Name }} </td>
             <td>{{ result.Description }}</td>
             <td>{{ result.CreditHours }}</td>
+            <td>{{ result.GenEdAbbreviation }}</td>
         </tr>
         {% endfor %}
     </table>

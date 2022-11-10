@@ -128,19 +128,32 @@ def course_search():
             filters.append('Number = %s')
             filter_vals.append(number)
 
+        gened = request.form['gened']
+        if gened != '':
+            filters.append('GenEdAbbreviation = %s')
+            filter_vals.append(gened)
+
         data = db.get_db()
         dictcursor = data.cursor(dictionary=True)
 
-        filter_str = " AND ".join(filters)
-        query = f"""
-            SELECT *
+        query = """
+            SELECT DISTINCT *
             FROM Course
-            WHERE {filter_str}
+            LEFT JOIN GenEdFulfillment g ON
+                Course.Subject = g.CourseSubject AND
+                Course.Number = g.CourseNumber
         """
 
+        print(filters)
+        filter_str = " AND ".join(filters)
         if len(filters) > 0:
-            dictcursor.execute(query, filter_vals)
-            courses = dictcursor.fetchall()
-            print(courses)
+            query += f"""
+                WHERE {filter_str}
+            """
+
+        print(query)
+
+        dictcursor.execute(query, filter_vals)
+        courses = dictcursor.fetchall()
     
     return render_template('course-search.html', results=courses)

@@ -7,8 +7,11 @@
     <title> Search Professor</title>
 </head>
 <body>
+    <button style="display: inline;" onclick="window.location.href='/';">
+        Back to front page
+    </button>
     <h1>Enter parameters to search for professor </h1>
-    <form action="/professor" method="POST">
+    <form action="/professor-search" method="POST">
         <label for="name">Professor Name</label>
         <input type="text" name="name" id="name" required >
         <label for="salary">Professor Salary</label>

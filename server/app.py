@@ -110,9 +110,7 @@ def course_crud():
     return render_template('course.html', success=success, error=error)
 
 @app.route('/course-search', methods=['GET', 'POST'])
-def course_search():
-    error = success = None
-    
+def course_search():    
     courses = []
     if request.method == 'POST':
         filters = []

@@ -41,8 +41,10 @@
 
         {% for result in results %}
         <tr>
-            <td> {{ result.Subject }} </td>
-            <td> {{ result.Number }} </td>
+            <td>
+                <a href={{ 'course-description/%s/%s' %(result.Subject,result.Number) }}>{{ result.Subject }}</a>
+            </td>
+            <td>{{ result.Number }}</td>
             <td>{{ result.Name }} </td>
             <td>{{ result.Description }}</td>
             <td>{{ result.CreditHours }}</td>

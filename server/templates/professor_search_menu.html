@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title> Search Professor</title>
+</head>
+<body>
+    <h1>Enter parameters to search for professor </h1>
+    <form action="/professor" method="POST">
+        <label for="name">Professor Name</label>
+        <input type="text" name="name" id="name" required >
+        <label for="salary">Professor Salary</label>
+        <input type="number" name="salary" id="salary" >
+        <label for="deptCode"> Department Code </label>
+        <input type="number" name="deptCode" id="deptCode">
+        <label for="colCode">College Code </label>
+        <input type="text" name="colCode" id="colCode">
+        <input type="submit" value="Submit">
+    </form>
+    {% if response %}
+    <p style="color: black;">{{ response }}</p>
+    {% endif %}
+
+    {% if professor %}
+    <h2> Query Search Result: Professors </h2>
+    <table>
+        <tr>
+            <th>Professor</th>
+            <th>Salary</th>
+            <th>Department Code </th>
+            <th>College Code </th>
+        </tr>
+        {% for prof in professor %}
+        <tr>
+            <td>{{ prof[0] }}</td>
+            <td>{{ prof[1] }}</td>
+            <td>{{ prof[2] }}</td>
+            <td>{{ prof[3] }}</td>
+        </tr>
+        {% endfor %}
+    </table>
+    {% endif %}
+</body>
+</html>

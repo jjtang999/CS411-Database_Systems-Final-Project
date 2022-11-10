@@ -183,6 +183,7 @@ def rich_professor():
         year = int(request.form['year'])
         salary_min = int(request.form['salary_min'])
         salary_max = int(request.form['salary_max'])
+        term = request.form['term'].capitalize()
 
         query = """
             SELECT c.CourseSubject, c.CourseNumber, rich.Name, rich.Salary
@@ -196,7 +197,7 @@ def rich_professor():
             ORDER BY rich.Salary DESC
         """
 
-        dictcursor.execute(query, (salary_min, salary_max, year))
+        dictcursor.execute(query, (salary_min, salary_max, year, term))
         results = dictcursor.fetchall()
     return render_template('rich-professor.html', results=results)
 

@@ -31,11 +31,8 @@
         <label for="number">Year</label>
         <input type="number" name="year" id="year" required>
 
-        <label for="gened">GenEd Requirement</label>
-        <select name="gened" id="gened">
-            {% for genedAbbr in geneds %}
-            <option value={{genedAbbr}}>{{genedAbbr}}</option>
-            {% endfor %}
+        <label for="term">Term</label>
+        <input type="text" name="term" id="term" required>
 
         <input type="submit" value="Submit">
     </form>

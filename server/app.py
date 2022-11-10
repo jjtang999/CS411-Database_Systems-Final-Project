@@ -173,6 +173,34 @@ def course_search():
     
     return render_template('course-search.html', results=courses, geneds=gened_types)
 
+@app.route('/rich-professor', methods=['GET', 'POST'])
+def rich_professor():
+    results = []
+    if request.method == 'POST':
+        data = db.get_db()
+        dictcursor = data.cursor(dictionary=True)
+
+        year = int(request.form['year'])
+        salary_min = int(request.form['salary_min'])
+        salary_max = int(request.form['salary_max'])
+        term = request.form['term'].capitalize()
+
+        query = """
+            SELECT c.CourseSubject, c.CourseNumber, rich.Name, rich.Salary
+            FROM CourseOffering c
+            JOIN (
+                SELECT Name, Salary
+                FROM Faculty
+                WHERE Salary >= %s AND Salary <= %s
+                ) AS rich ON c.PrimaryInstructor = rich.Name
+            WHERE Yr = %s AND Term = %s
+            ORDER BY rich.Salary DESC
+        """
+
+        dictcursor.execute(query, (salary_min, salary_max, year, term))
+        results = dictcursor.fetchall()
+    return render_template('rich-professor.html', results=results)
+
 @app.route('/professor-search', methods=['GET', 'POST'])
 def professor_search():
     response = None

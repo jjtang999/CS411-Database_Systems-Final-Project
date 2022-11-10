@@ -1,11 +1,15 @@
 from flask import Flask, render_template, request
 from . import db
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 app = Flask(__name__)
 
 app.config['DB_HOST'] = '35.202.82.95'
 app.config['DB_USER'] = 'root'
-app.config['DB_PASSWORD'] = 'EL/r=dF^)Tl&Z1iG' # Do not commit the password to the repo
+app.config['DB_PASSWORD'] = os.getenv('DB_PASSWORD') # Do not commit the password to the repo
 app.config['DB_NAME'] = 'course_explorer'
 
 db.init_app(app)

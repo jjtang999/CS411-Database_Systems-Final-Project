@@ -4,3 +4,4 @@ channels:
 dependencies:
   - flask
   - mysql-connector-python
+  - python-dotenv

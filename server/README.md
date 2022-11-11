@@ -2,7 +2,7 @@
 1. Do all of the following commands inside this `/server/` directory.
 2. Install [Anaconda](https://www.anaconda.com/products/distribution) and create a virtual environment with the `environment.yml` file here as the base.
     ```
-    conda env create -f enviornment.yml
+    conda env create -f environment.yml
     ```
     This will create an environment called `StoredProcedures`
 3. Create a `.env` file in `server/` and populate it with the following line

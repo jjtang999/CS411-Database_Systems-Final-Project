@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Professor</title>
+</head>
+<body>
+    <button onclick="window.location.href='/';">
+        Back to front page
+    </button>
+    <h1>Modify Professors</h1>
+    <form action="/professor" method="POST">
+        <label for="name">Professor Name</label>
+        <input type="text" name="name" id="name" required>
+
+        <label for="salary">Professor Salary</label>
+        <input type="text" name="salary" id="salary">
+
+        <label for="department">Professor Department Code</label>
+        <input type="text" name="departmentcode" id="departmentcode">
+
+        <label for="credits">Professor College Code</label>
+        <input type="text" name="collegecode" id="collegecode">
+
+        <label for="delete">Delete Entry</label>
+        <input type="checkbox" name="delete" id="delete">
+        <input type="submit" value="Submit">
+    </form>
+    {% if error %}
+    <p style="color: red;">{{ error }}</p>
+    {% endif %}
+    {% if success %}
+    <p style="color: green;">{{ success }}</p>
+    {% endif %}
+</body>
+</html>

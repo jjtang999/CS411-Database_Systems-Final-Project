@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detailed Professsor Description</title>
+</head>
+<body>
+    <button onclick="window.location.href='/';">
+        Back to front page
+    </button>
+    <h1>{{ "{} {}: {}".format(professor[0], professor[1], professor[2]) }}</h1>
+    <h2>Sections</h2>
+    <table>
+        <tr>
+            <!-- Name, Salary -->
+            <th>Name</th>
+            <th>Salary</th>
+        </tr>
+        {% for course_taught in courses_taught %}
+        <tr>
+            <td>{{ course_taught[0] }}</td>
+            <td>{{ course_taught[1] }}</td>
+            <td>{{ course_taught[2] }}</td>
+        </tr>
+        {% endfor %}
+</body>
+</html>

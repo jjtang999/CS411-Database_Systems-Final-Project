@@ -48,6 +48,31 @@ def course_description(subject, number):
 
     return render_template('course-description.html', course=course[0], offerings=offerings, instructor_data=instructor_data)
 
+@app.route('/professor-description/<name>')
+def professor_description(name): # how to do average GPA? (according to mockup)
+    # TODO: Handle errors if subject or number are invalid or do not exist
+    name = name.upper()
+    data = db.get_db()
+    cursor = data.cursor()
+    
+    professor_query ="""
+        SELECT Name, Salary
+        FROM Faculty
+        WHERE Name = %s
+    """
+    cursor.execute(professor_query, name)
+    professor = cursor.fetchall()
+
+    courses_taught_query = """ 
+        SELECT Yr, Term, CourseSubject, CourseNumber, GenEdAbbreviation
+        CourseOffering NATURAL JOIN GenEdFulfillment
+        WHERE PrimaryInstructor = %s
+    """
+    cursor.execute(courses_taught_query, name)
+    courses_taught = cursor.fetchall()
+
+    return render_template('professor-description.html', professor=professor[0], courses_taught = courses_taught)
+
 @app.route('/course', methods=['GET', 'POST'])
 def course_crud():
     error = success = None
@@ -112,6 +137,68 @@ def course_crud():
         else:
             error = 'Subject and number are required'
     return render_template('course.html', success=success, error=error)
+
+@app.route('/professor', methods=['GET', 'POST'])
+def professor_crud():
+    error = success = None
+    if request.method == 'POST':
+        if request.form['name']:
+            if 'delete' in request.form:
+                name = request.form['name'].upper()
+                data = db.get_db()
+                cursor = data.cursor()
+                query = """
+                    SELECT Name
+                    FROM Faculty
+                    WHERE Name = %s
+                """
+                cursor.execute(query, name)
+                name = cursor.fetchall()
+                # TODO: Check if there is a better way to do this without needing to check if the course exists
+                if name: # Delete the professor
+                    delete_query = """
+                        DELETE FROM Faculty
+                        WHERE Name = %s
+                    """
+                    cursor.execute(delete_query, name)
+                    data.commit()
+                    success = f'Deleted professor {name}'
+                else:
+                    error = f'Professor {name} does not exist'
+            else:
+                name = request.form['name'].upper()
+                data = db.get_db()
+                cursor = data.cursor()
+                query = """
+                    SELECT Name
+                    FROM Faculty
+                    WHERE Name = %s
+                """
+                cursor.execute(query, name)
+                name = cursor.fetchall()
+                if name:
+                    # Update the professor
+                    # TODO: Input validation on the length and type of inputs
+                    update_query = """
+                        UPDATE Faculty
+                        SET Salary = %s, DepartmentCode = %s, CollegeCode = %s
+                        WHERE Name = %s
+                    """
+                    cursor.execute(update_query, (request.form['salary'], request.form['departmentcode'], request.form['collegecode'], name))
+                    data.commit()
+                    success = f'Updated professor {name}'
+                else:
+                    # Insert a new professor
+                    insert_query = """
+                        INSERT INTO Faculty (Name, Salary, DepartmentCode, CollegeCode)
+                        VALUES (%s, %s, %s, %s)
+                    """
+                    cursor.execute(insert_query, (name, request.form['salary'], request.form['departmentcode'], request.form['collegecode']))
+                    data.commit()
+                    success = f'Inserted professor {name}'
+        else:
+            error = 'name is required'
+    return render_template('professor.html', success=success, error=error)
 
 # Returns gened abbreviations as a list of strings
 def get_gened_abbreviations():

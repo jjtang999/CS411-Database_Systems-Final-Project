@@ -42,6 +42,7 @@ def course_description(subject, number):
     cursor.execute(offerings_query, (subject, number))
     offerings = cursor.fetchall()
 
+    # The stored procedure is described in queries/course_description.sql
     cursor.callproc('CourseDescription', (subject, number))
     for result in cursor.stored_results():
         instructor_data = result.fetchall()

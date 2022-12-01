@@ -296,46 +296,71 @@ def professor_search():
     countAs = None
     countFs = None
     if request.method == 'POST':
-        print(request.form['name'])
-        if request.form['fgt'] and request.form['ast'] :
-            countAs = request.form['ast']
-            countFs = request.form['fgt']
-            database = db.get_db()
-            dbCursor = database.cursor()
-            query = """
-                SELECT f.name, f.salary, failProfs.F
+        val = []
+        where1 =  """"""
+        where2 =  """"""
+        flag2 = 0
+        flag = 0 
+        if request.form['name']:
+            where1+= """ where Name = %s """
+            val.append(request.form['name'])
+            flag = 1
+
+        if request.form['salary']:
+            if flag == 0:
+                where1+=""" where Salary = %s """
+            else:
+                where1+=""" and Salary = %s """
+            flag = 1
+            val.append(request.form['salary'])
+
+        if request.form['deptCode']:
+            if flag == 0:
+                where1+=""" where DepartmentCode = %s """
+            else:
+                where1+=""" and DepartmentCode = %s """
+            flag = 1
+            val.append(request.form['deptCode'])
+
+        if request.form['colCode']:
+            if flag == 0:
+                where1+=""" where CollegeCode = %s """
+            else:
+                where1+=""" and CollegeCode = %s """
+            flag = 1
+            val.append(request.form['colCode'])
+        
+        if request.form['fgt']:
+            where2+=""" where F > %s """
+            flag2 = 1
+            val.append(request.form['fgt'])
+
+        if request.form['ast']:
+            if flag2 == 0:
+                where2+=""" where A + Ap + Am <  %s """
+            else:
+                where2+=""" AND A + Ap + Am < %s """
+            val.append(request.form['ast'])
+
+        database = db.get_db()
+        dbCursor = database.cursor()
+        print("vals",val)
+        query = """
+                SELECT distinct f.name, f.salary, f.DepartmentCode, f.CollegeCode , failProfs.F
                 FROM Faculty f
                 JOIN (
 	                SELECT PrimaryInstructor, F
-	                FROM CourseOffering
-	                WHERE F > %s AND A + Ap + Am < %s
-                ) AS failProfs ON f.Name = failProfs.PrimaryInstructor
-                ORDER BY failProfs.F DESC
-            """
-            dbCursor.execute(query, (countFs,countAs) )
-            professor = dbCursor.fetchall()
-            if professor:
-                response = f'Professors with number of As smaller than {countAs} and number of Fs greater than {countFs} found '
-            else:
-                response =  f'Professors with number of As smaller than {countAs} and number of Fs greater than {countFs} does not exist'
-        elif request.form['name']:
-            # profName = request.form['name'][0].upper() + request.form['name'][1:].lower()
-            profName = request.form['name']
-            database = db.get_db()
-            dbCursor = database.cursor()
-            query = """
-                SELECT Name, Salary, DepartmentCode, CollegeCode
-                FROM Faculty 
-                WHERE Name = %s 
-            """
-            dbCursor.execute(query, [profName] )
-            professor = dbCursor.fetchall()
-            print("Professor sql output: ",professor)
-            # Checking if query was successfull 
-            if professor:
-                response = f'Professor {profName} found '
-            else:
-                response =  f'Professor {profName} does not exist'
+	                FROM CourseOffering """ + where2 + """
+                ) AS failProfs ON f.Name = failProfs.PrimaryInstructor 
+                 """ + where1 + """ ORDER BY failProfs.F DESC """
+        print(query)
+        val = tuple(val)
+        print("vals tup",len(val))
+        dbCursor.execute(query, val )
+        professor = dbCursor.fetchall()
+
+        if professor:
+            response = f' Professors match found '
         else:
-            response = 'Professor Name or Grade range is required'
+            response =  f' No matching professor found '
     return render_template('professor_search_menu.html', response = response, professor = professor )

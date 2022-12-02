@@ -218,7 +218,9 @@ def get_gened_abbreviations():
     """
 
     cursor.execute(query)
-    return [g[0] for g in cursor.fetchall()]
+    abbrs = [g[0] for g in cursor.fetchall()]
+    abbrs.append("NONE")
+    return abbrs
 
 @app.route('/course-search', methods=['GET', 'POST'])
 def course_search():    
@@ -240,7 +242,7 @@ def course_search():
             filter_vals.append(number)
 
         gened = request.form['gened']
-        if gened != '':
+        if gened != 'NONE':
             filters.append('GenEdAbbreviation = %s')
             filter_vals.append(gened)
 
@@ -255,14 +257,15 @@ def course_search():
                 Course.Number = g.CourseNumber
         """
 
-        print(filters)
         filter_str = " AND ".join(filters)
+
+        print(filter_str)
+
+        print(query)
         if len(filters) > 0:
             query += f"""
                 WHERE {filter_str}
             """
-
-        print(query)
 
         dictcursor.execute(query, filter_vals)
         courses = dictcursor.fetchall()

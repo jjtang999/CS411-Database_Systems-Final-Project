@@ -87,7 +87,9 @@ BEGIN
     END LOOP cloop;
     close cur;
 
-    SELECT * FROM NewTable ORDER BY AvgGPA DESC;
+    SELECT n.Name, n.AvgGPA, n.MCG, F.DepartmentName
+    FROM NewTable n JOIN (SELECT Name, DepartmentName FROM Faculty NATURAL JOIN Department) as F ON (n.Name = F.Name)
+    ORDER BY AvgGPA DESC;
 END$$
 
 DELIMITER ;

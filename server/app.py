@@ -42,12 +42,20 @@ def course_description(subject, number):
     cursor.execute(offerings_query, (subject, number))
     offerings = cursor.fetchall()
 
+    gened_query = """
+        SELECT GenEdAbbreviation
+        FROM GenEdFulfillment
+        WHERE CourseSubject = %s AND CourseNumber = %s
+    """
+    cursor.execute(gened_query, (subject, number))
+    gened = cursor.fetchall()
+
     # The stored procedure is described in queries/course_description.sql
     cursor.callproc('CourseDescription', (subject, number))
     for result in cursor.stored_results():
         instructor_data = result.fetchall()
 
-    return render_template('course-description.html', course=course[0], offerings=offerings, instructor_data=instructor_data)
+    return render_template('course-description.html', course=course[0], offerings=offerings, instructor_data=instructor_data, geneds=gened)
 
 @app.route('/professor-description/<name>')
 def professor_description(name): # how to do average GPA? (according to mockup)

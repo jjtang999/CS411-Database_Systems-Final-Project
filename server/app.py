@@ -153,7 +153,10 @@ def professor_crud():
                     FROM Faculty
                     WHERE Name = %s
                 """
-                cursor.execute(query, name)
+                # name = tuple(name)
+                nameRepl = []
+                nameRepl.append(name)
+                cursor.execute(query, tuple(nameRepl) )
                 name = cursor.fetchall()
                 # TODO: Check if there is a better way to do this without needing to check if the course exists
                 if name: # Delete the professor
@@ -161,21 +164,25 @@ def professor_crud():
                         DELETE FROM Faculty
                         WHERE Name = %s
                     """
-                    cursor.execute(delete_query, name)
+                    nameRepl = []
+                    nameRepl.append(name)
+                    cursor.execute(delete_query, tuple(nameRepl)  )
                     data.commit()
                     success = f'Deleted professor {name}'
                 else:
                     error = f'Professor {name} does not exist'
             else:
-                name = request.form['name'].upper()
+                name = request.form['name']
                 data = db.get_db()
                 cursor = data.cursor()
                 query = """
-                    SELECT Name
+                    SELECT distinct Name
                     FROM Faculty
                     WHERE Name = %s
                 """
-                cursor.execute(query, name)
+                nameRepl = []
+                nameRepl.append(name)
+                cursor.execute(query, tuple(nameRepl ) )
                 name = cursor.fetchall()
                 if name:
                     # Update the professor
@@ -185,18 +192,18 @@ def professor_crud():
                         SET Salary = %s, DepartmentCode = %s, CollegeCode = %s
                         WHERE Name = %s
                     """
-                    cursor.execute(update_query, (request.form['salary'], request.form['departmentcode'], request.form['collegecode'], name))
+                    cursor.execute(update_query, (request.form['salary'], request.form['departmentcode'], request.form['collegecode'], name[0][0]))
                     data.commit()
-                    success = f'Updated professor {name}'
+                    success = f'Updated professor {name[0][0]}'
                 else:
                     # Insert a new professor
                     insert_query = """
                         INSERT INTO Faculty (Name, Salary, DepartmentCode, CollegeCode)
                         VALUES (%s, %s, %s, %s)
                     """
-                    cursor.execute(insert_query, (name, request.form['salary'], request.form['departmentcode'], request.form['collegecode']))
+                    cursor.execute(insert_query, (name[0][0], request.form['salary'], request.form['departmentcode'], request.form['collegecode']))
                     data.commit()
-                    success = f'Inserted professor {name}'
+                    success = f'Inserted professor {name[0][0]}'
         else:
             error = 'name is required'
     return render_template('professor.html', success=success, error=error)

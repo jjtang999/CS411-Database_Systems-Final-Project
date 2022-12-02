@@ -280,8 +280,8 @@ def rich_professor():
         dictcursor = data.cursor(dictionary=True)
 
         year = int(request.form['year'])
-        salary_min = int(request.form['salary_min'])
-        salary_max = int(request.form['salary_max'])
+        salary_min = float(request.form['salary_min'])
+        salary_max = float(request.form['salary_max'])
         term = request.form['term'].capitalize()
 
         query = """

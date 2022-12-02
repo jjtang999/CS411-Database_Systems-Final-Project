@@ -42,12 +42,20 @@ def course_description(subject, number):
     cursor.execute(offerings_query, (subject, number))
     offerings = cursor.fetchall()
 
+    gened_query = """
+        SELECT GenEdAbbreviation
+        FROM GenEdFulfillment
+        WHERE CourseSubject = %s AND CourseNumber = %s
+    """
+    cursor.execute(gened_query, (subject, number))
+    gened = cursor.fetchall()
+
     # The stored procedure is described in queries/course_description.sql
     cursor.callproc('CourseDescription', (subject, number))
     for result in cursor.stored_results():
         instructor_data = result.fetchall()
 
-    return render_template('course-description.html', course=course[0], offerings=offerings, instructor_data=instructor_data)
+    return render_template('course-description.html', course=course[0], offerings=offerings, instructor_data=instructor_data, geneds=gened)
 
 @app.route('/professor-description/<name>')
 def professor_description(name): # how to do average GPA? (according to mockup)
@@ -217,7 +225,9 @@ def get_gened_abbreviations():
     """
 
     cursor.execute(query)
-    return [g[0] for g in cursor.fetchall()]
+    abbrs = [g[0] for g in cursor.fetchall()]
+    abbrs.append("NONE")
+    return abbrs
 
 @app.route('/course-search', methods=['GET', 'POST'])
 def course_search():    
@@ -239,7 +249,7 @@ def course_search():
             filter_vals.append(number)
 
         gened = request.form['gened']
-        if gened != '':
+        if gened != 'NONE':
             filters.append('GenEdAbbreviation = %s')
             filter_vals.append(gened)
 
@@ -254,14 +264,15 @@ def course_search():
                 Course.Number = g.CourseNumber
         """
 
-        print(filters)
         filter_str = " AND ".join(filters)
+
+        print(filter_str)
+
+        print(query)
         if len(filters) > 0:
             query += f"""
                 WHERE {filter_str}
             """
-
-        print(query)
 
         dictcursor.execute(query, filter_vals)
         courses = dictcursor.fetchall()
@@ -276,8 +287,8 @@ def rich_professor():
         dictcursor = data.cursor(dictionary=True)
 
         year = int(request.form['year'])
-        salary_min = int(request.form['salary_min'])
-        salary_max = int(request.form['salary_max'])
+        salary_min = float(request.form['salary_min'])
+        salary_max = float(request.form['salary_max'])
         term = request.form['term'].capitalize()
 
         query = """

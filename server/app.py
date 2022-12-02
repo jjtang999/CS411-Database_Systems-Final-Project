@@ -345,14 +345,21 @@ def professor_search():
         database = db.get_db()
         dbCursor = database.cursor()
         print("vals",val)
-        query = """
-                SELECT distinct f.name, f.salary, f.DepartmentCode, f.CollegeCode , failProfs.F
-                FROM Faculty f
-                JOIN (
-	                SELECT PrimaryInstructor, F
-	                FROM CourseOffering """ + where2 + """
-                ) AS failProfs ON f.Name = failProfs.PrimaryInstructor 
-                 """ + where1 + """ ORDER BY failProfs.F DESC """
+        if request.form['fgt'] or request.form['ast']:
+            query = """
+                    SELECT distinct f.name, f.salary, f.DepartmentCode, f.CollegeCode , failProfs.F
+                    FROM Faculty f
+                    JOIN (
+                        SELECT PrimaryInstructor, F
+                        FROM CourseOffering """ + where2 + """
+                    ) AS failProfs ON f.Name = failProfs.PrimaryInstructor 
+                        """ + where1 + """ ORDER BY failProfs.F DESC """
+        else:
+            query = """
+                    SELECT distinct f.name, f.salary, f.DepartmentCode, f.CollegeCode
+                    FROM Faculty f
+                    """ + where1 + """ ORDER BY f.salary DESC """
+
         print(query)
         val = tuple(val)
         print("vals tup",len(val))

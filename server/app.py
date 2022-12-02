@@ -209,9 +209,10 @@ def professor_crud():
                         INSERT INTO Faculty (Name, Salary, DepartmentCode, CollegeCode)
                         VALUES (%s, %s, %s, %s)
                     """
-                    cursor.execute(insert_query, (name[0][0], request.form['salary'], request.form['departmentcode'], request.form['collegecode']))
+                    cursor.execute(insert_query, (request.form['name'], request.form['salary'], request.form['departmentcode'], request.form['collegecode']))
                     data.commit()
-                    success = f'Inserted professor {name[0][0]}'
+                    temp = request.form['name']
+                    success = f'Inserted professor {temp}'
         else:
             error = 'name is required'
     return render_template('professor.html', success=success, error=error)

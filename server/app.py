@@ -153,7 +153,7 @@ def professor_crud():
     if request.method == 'POST':
         if request.form['name']:
             if 'delete' in request.form:
-                name = request.form['name'].upper()
+                name = request.form['name']
                 data = db.get_db()
                 cursor = data.cursor()
                 query = """
@@ -162,19 +162,15 @@ def professor_crud():
                     WHERE Name = %s
                 """
                 # name = tuple(name)
-                nameRepl = []
-                nameRepl.append(name)
-                cursor.execute(query, tuple(nameRepl) )
-                name = cursor.fetchall()
+                cursor.execute(query, (name, ) )
+                exists = cursor.fetchall()
                 # TODO: Check if there is a better way to do this without needing to check if the course exists
-                if name: # Delete the professor
+                if exists: # Delete the professor
                     delete_query = """
                         DELETE FROM Faculty
                         WHERE Name = %s
                     """
-                    nameRepl = []
-                    nameRepl.append(name)
-                    cursor.execute(delete_query, tuple(nameRepl)  )
+                    cursor.execute(delete_query, (name, ))
                     data.commit()
                     success = f'Deleted professor {name}'
                 else:
@@ -188,11 +184,9 @@ def professor_crud():
                     FROM Faculty
                     WHERE Name = %s
                 """
-                nameRepl = []
-                nameRepl.append(name)
-                cursor.execute(query, tuple(nameRepl ) )
-                name = cursor.fetchall()
-                if name:
+                cursor.execute(query, (name, ))
+                exists = cursor.fetchall()
+                if exists:
                     # Update the professor
                     # TODO: Input validation on the length and type of inputs
                     update_query = """
@@ -200,9 +194,9 @@ def professor_crud():
                         SET Salary = %s, DepartmentCode = %s, CollegeCode = %s
                         WHERE Name = %s
                     """
-                    cursor.execute(update_query, (request.form['salary'], request.form['departmentcode'], request.form['collegecode'], name[0][0]))
+                    cursor.execute(update_query, (request.form['salary'], request.form['departmentcode'], request.form['collegecode'], name))
                     data.commit()
-                    success = f'Updated professor {name[0][0]}'
+                    success = f'Updated professor {name}'
                 else:
                     # Insert a new professor
                     insert_query = """

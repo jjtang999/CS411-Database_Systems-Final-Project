@@ -56,12 +56,14 @@
             <th>Instructor</th>
             <th>Average GPA</th>
             <th>Most common grade</th>
+            <th>Department</th>
         </tr>
         {% for instructor in instructor_data %}
         <tr>
             <td>{{ instructor[0] }}</td>
             <td>{{ instructor[1] }}</td>
             <td>{{ instructor[2] }}</td>
+            <td>{{ instructor[3] }}</td>
         </tr>
         {% endfor %}
     </table>

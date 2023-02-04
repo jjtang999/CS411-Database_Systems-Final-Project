@@ -1,16 +1,9 @@
-# Q-TeamID-SampleProject
-This is a template for CS411 project repository. Please make sure that your title follows the convention: Q-[TeamID]-[YourTeamName]. All TeamID should have a three digit coding (i.e. if you are team 20, you should have `team020` as your ID.). You should also make sure that your url for this repository is [fa22-cs411-Q-team000-teamname.git] so TAs can correctly clone your repository and keep them up-to-date.
+# CS411 Final Project
+Our project aimed to provide a webpage full of more detailed information students can use when deciding to register for (or just generally examine) courses here at the university. We aimed to provide detailed information on the professors, gpa’s, and times for many courses here at the university. We also included information about courses that satisfy general education requirements. Students are able to use our webpage to do in depth analysis on the classes they want to take.
 
-Once you setup your project, please remember to submit your team formation to the team form.
+If a student is struggling to fill a general education requirement, they can our application to search for classes that satisfy their requirements. After finding a list of suitable courses, they can investigate information relating to the professor, including average GPA given for the course (and in general). They can also look at interesting correlations within the course data, such as how course start time and professor’s salary affects the average GPA.
 
-## Permission
-You should make sure you allow TAs to access your repository. You can add TA(s) as a collaborator to your repository.
+# Link to video submission
 
-## Preparing for your release
-Eash submission should be in it's own [release](https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases). Release are specific freezes to your repository. You should submit your commit hash on canvas or google sheet. When tagging your stage, please use the tag `stage.x` where x is the number to represent the stage.
+Link to Video: https://drive.google.com/file/d/1YZijNVprwaWTERDexIAuypjACDQdVgXO/view?usp=sharing
 
-## Keeping things up-to-date
-You should make sure you keep your project root files up-to-date. Information for each file/folders are explained.
-
-## Code Contribution
-Individual code contribution will be used to evaluate individual contribution to the project.
